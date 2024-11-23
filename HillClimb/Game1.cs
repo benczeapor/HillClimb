@@ -10,8 +10,6 @@ using System;
 using System.Data;
 using System.Diagnostics;
 
-//test1
-
 namespace HillClimb
 {
     public class Game1 : Game
