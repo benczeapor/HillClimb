@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MonoGame.Framework;
+using MonoGame.Extended;
 //using FarseerPhysics.Dynamics;
 
 using System;
@@ -16,6 +18,7 @@ namespace HillClimb
         private float level;//
 
         private Texture2D texture;
+        
 
         private List<Vector4> platforms;
         public List<Vector4> Platforms
@@ -49,8 +52,9 @@ namespace HillClimb
 
             level = 50;
             //rects.Add(new Rectangle(0, (int)(graphicsDevice.Viewport.Height - level), graphicsDevice.Viewport.Width, (int)level));
-            platforms.Add(new Vector4(0, (int)(graphicsDevice.Viewport.Height - level), graphicsDevice.Viewport.Width, (int)(graphicsDevice.Viewport.Height - level)));
-            //platforms.Add(new Vector4(10, 100, 800, 400));
+            //platforms.Add(new Vector4(0, (int)(graphicsDevice.Viewport.Height - level), 800, (int)(graphicsDevice.Viewport.Height - level)));
+            //platforms.Add(new Vector4(200, 300, 500, 300));
+            platforms.Add(new Vector4(0, 200, 400, 430));
 
             wheel = new Wheel(this);
             wheel.LoadContent(contentManager);
@@ -71,11 +75,14 @@ namespace HillClimb
 
             foreach(Vector4 platform in platforms)
             {
-                float length = (float)Math.Sqrt((platform.X - platform.Z) * (platform.X - platform.Z) + (platform.Y - platform.W) + (platform.Y - platform.W));
+                float length = (float)Math.Sqrt((platform.X - platform.Z) * (platform.X - platform.Z) + (platform.Y - platform.W) * (platform.Y - platform.W));
                 float rotation = (float)Math.Asin((Math.Abs(platform.W - platform.Y) / length));
 
                 Rectangle rect = new Rectangle((int)platform.X, (int)platform.Y, (int)length, 20);
+
                 spriteBatch.Draw(texture, rect, null, Color.Black, rotation, new Vector2(0, 0), SpriteEffects.None, 1);
+
+                spriteBatch.DrawLine(platform.X, platform.Y, platform.Z, platform.W, Color.Blue);
             }
 
             spriteBatch.Draw(texture, new Rectangle(49, (int)(480 - level), (int)(MathHelper.TwoPi * 25), 10), Color.Yellow);

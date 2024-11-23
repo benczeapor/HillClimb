@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-//using nkast.Aether.Physics2D.Dynamics;
+using MonoGame.Extended;
 
 using FarseerPhysics.Dynamics;
 
@@ -30,6 +30,8 @@ namespace HillClimb
         private float wheelRadius;
         private float wheelRotation;
         private bool isDrive;
+
+        private Vector2 projection;
 
         private Vector2 position;
         public Vector2 Position
@@ -73,19 +75,62 @@ namespace HillClimb
             foreach(Vector4 platform in platforms)
             {
 
+                if (position.Y > platform.Y && position.Y > platform.W)
+                {
+                    continue;
+                }
+
+                float d1 = (float)Math.Sqrt((position.X - platform.X) * (position.X - platform.X) + (position.Y - platform.Y) * (position.Y - platform.Y));
+                float d2 = (float)Math.Sqrt((position.X - platform.Z) * (position.X - platform.Z) + (position.Y - platform.W) * (position.Y - platform.W));
+                float d3 = (float)Math.Sqrt((platform.X - platform.Z) * (platform.X - platform.Z) + (platform.Y - platform.W) * (platform.Y - platform.W));
+
+                float a1 = (float)Math.Acos((d1*d1 + d3*d3 - d2*d2) / (2 * d1 * d3));
+                float a2 = (float)Math.Acos((d2*d2 + d3*d3 - d1*d1) / (2 * d2 * d3));
+
+                if(a1 > Math.PI / 2 || a2 > Math.PI / 2) // if it doesn't intersect
+                {
+                    continue;
+                }
+
+                float slope = (float)Math.Asin(Math.Abs(platform.Y - platform.W) / d3);
+
+                //Debug.WriteLine(slope.ToString());
+
                 float distance = (float)(Math.Abs((platform.Z - platform.X) * (position.Y - platform.Y) - (platform.W - platform.Y) * (position.X - platform.X)) / Math.Sqrt((platform.Z - platform.X) * (platform.Z - platform.X) + (platform.W - platform.Y) * (platform.W - platform.Y)));
                 float nextDistance = (float)(Math.Abs((platform.Z - platform.X) * ((position.Y + velocity.Y * elapsed) - platform.Y) - (platform.W - platform.Y) * ((position.X + velocity.X * elapsed) - platform.X)) / Math.Sqrt((platform.Z - platform.X) * (platform.Z - platform.X) + (platform.W - platform.Y) * (platform.W - platform.Y)));
+
+                if(distance > 2 * wheelRadius)
+                {
+                    continue;
+                }
+
+                float h = (float)(Math.Sin(a1) * d1 + Math.Sin(a2) * d2) / 2;
+
+                float h1 = (float)Math.Sqrt(d1*d1 - h*h);
+                float h2 = (float)Math.Sqrt(d2*d2 - h * h);
+
+                //projection.X = (platform.X * h1 + platform.Z * h2) / (h1 + h2);
+                //projection.Y = (platform.Y * h1 + platform.W * h2) / (h1 + h2);
+
+                //projection.X = (platform.X + platform.Z) / 2;
+                //projection.Y = (platform.Y + platform.W) / 2;
+
+                //if(d1 > d3 || d2 > d3)
+                //{
+                //    distance = -1;
+                //}
 
                 //if(minD > distance)
                 //{
                 //    minD = distance;
                 //}
 
-                //Debug.Write(distance);
-                //Debug.Write(", ");
-                //Debug.Write(position.X);
-                //Debug.Write(", ");
-                //Debug.WriteLine(position.Y);
+                Debug.Write(h1);
+                Debug.Write(", ");
+                Debug.Write(h2);
+                //Debug.Write("\n");
+                Debug.Write(", ");
+                Debug.WriteLine(d3);
 
                 if (distance <= touchThreshold + wheelRadius)
                 {
@@ -95,7 +140,7 @@ namespace HillClimb
                 {
                     isOnGround = false;
                 }
-
+                //if()
                 if (distance <= wheelRadius)
                 {
                     velocity.Y = (float)(-velocity.Y * 0.5);
@@ -110,14 +155,14 @@ namespace HillClimb
             }
 
             //temp
-            if (position.X - wheelRadius <= 0)
-            {
-                velocity.X *= -1;
-            }
-            if (position.X + wheelRadius >= 800)
-            {
-                velocity.X *= -1;
-            }
+            //if (position.X - wheelRadius <= 0)
+            //{
+            //    velocity.X *= -1;
+            //}
+            //if (position.X + wheelRadius >= 800)
+            //{
+            //    velocity.X *= -1;
+            //}
         }
 
         public void applyPhysics(GameTime gameTime)
@@ -221,6 +266,7 @@ namespace HillClimb
             //spriteBatch.Draw(texture, Vector2.Subtract(position, new Vector2(wheelRadius, wheelRadius)), Color.White);
             //spriteBatch.Draw(texture, Vector2.Subtract(position, new Vector2(wheelRadius, wheelRadius)), null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(texture, position, null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
+            spriteBatch.DrawLine(projection, position, Color.Red);
 
             spriteBatch.End();
         }
