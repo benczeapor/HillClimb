@@ -26,6 +26,8 @@ namespace HillClimb
 
         private Texture2D texture;
 
+        private float slope;
+
         private float rotationSpeed;
         private float wheelRadius;
         private float wheelRotation;
@@ -70,44 +72,50 @@ namespace HillClimb
 
 
             //Rectangle rect = map.Rect;
-            List<Vector4> platforms = map.Platforms;
+            List<Segment> segments = map.Segments;
 
-            foreach(Vector4 platform in platforms)
+            foreach(Segment segment in segments)
             {
 
-                if (position.Y > platform.Y && position.Y > platform.W)
+                if (position.Y > segment.Y && position.Y > segment.W)
                 {
                     continue;
                 }
 
-                float d1 = (float)Math.Sqrt((position.X - platform.X) * (position.X - platform.X) + (position.Y - platform.Y) * (position.Y - platform.Y));
-                float d2 = (float)Math.Sqrt((position.X - platform.Z) * (position.X - platform.Z) + (position.Y - platform.W) * (position.Y - platform.W));
-                float d3 = (float)Math.Sqrt((platform.X - platform.Z) * (platform.X - platform.Z) + (platform.Y - platform.W) * (platform.Y - platform.W));
+                float d1 = (float)Math.Sqrt((position.X - segment.X) * (position.X - segment.X) + (position.Y - segment.Y) * (position.Y - segment.Y));
+                float d2 = (float)Math.Sqrt((position.X - segment.Z) * (position.X - segment.Z) + (position.Y - segment.W) * (position.Y - segment.W));
+                float d3 = (float)Math.Sqrt((segment.X - segment.Z) * (segment.X - segment.Z) + (segment.Y - segment.W) * (segment.Y - segment.W));
 
                 float a1 = (float)Math.Acos((d1*d1 + d3*d3 - d2*d2) / (2 * d1 * d3));
                 float a2 = (float)Math.Acos((d2*d2 + d3*d3 - d1*d1) / (2 * d2 * d3));
 
-                if(a1 > Math.PI / 2 || a2 > Math.PI / 2) // if it doesn't intersect
+                if(a1 > Math.PI / 2 || a2 > Math.PI / 2 && velocity.X == 0) // if it doesn't intersect
                 {
                     continue;
                 }
 
-                float slope = (float)Math.Asin(Math.Abs(platform.Y - platform.W) / d3);
+                slope = (float)Math.Asin(Math.Abs(segment.Y - segment.W) / d3);
 
                 //Debug.WriteLine(slope.ToString());
 
-                float distance = (float)(Math.Abs((platform.Z - platform.X) * (position.Y - platform.Y) - (platform.W - platform.Y) * (position.X - platform.X)) / Math.Sqrt((platform.Z - platform.X) * (platform.Z - platform.X) + (platform.W - platform.Y) * (platform.W - platform.Y)));
-                float nextDistance = (float)(Math.Abs((platform.Z - platform.X) * ((position.Y + velocity.Y * elapsed) - platform.Y) - (platform.W - platform.Y) * ((position.X + velocity.X * elapsed) - platform.X)) / Math.Sqrt((platform.Z - platform.X) * (platform.Z - platform.X) + (platform.W - platform.Y) * (platform.W - platform.Y)));
+                //float distance = (float)(Math.Abs((segment.Z - segment.X) * (position.Y - segment.Y) - (segment.W - segment.Y) * (position.X - segment.X)) / Math.Sqrt((segment.Z - segment.X) * (segment.Z - segment.X) + (segment.W - segment.Y) * (segment.W - segment.Y)));
+                //float nextDistance = (float)(Math.Abs((segment.Z - segment.X) * ((position.Y + velocity.Y * elapsed) - segment.Y) - (segment.W - segment.Y) * ((position.X + velocity.X * elapsed) - segment.X)) / Math.Sqrt((segment.Z - segment.X) * (segment.Z - segment.X) + (segment.W - segment.Y) * (segment.W - segment.Y)));
 
-                if(distance > 2 * wheelRadius)
-                {
-                    continue;
-                }
+                float distance = segment.calculateDistance(position);
+                float nextDistance = segment.calculateDistance(position + velocity * elapsed);
+
+                //if(distance > 2 * wheelRadius)
+                //{
+                //    continue;
+                //}
 
                 float h = (float)(Math.Sin(a1) * d1 + Math.Sin(a2) * d2) / 2;
 
                 float h1 = (float)Math.Sqrt(d1*d1 - h*h);
                 float h2 = (float)Math.Sqrt(d2*d2 - h * h);
+
+                projection.X = position.X + (100 * (float)Math.Cos(slope));
+                projection.Y = position.Y + (100 * (float)Math.Sin(slope));
 
                 //projection.X = (platform.X * h1 + platform.Z * h2) / (h1 + h2);
                 //projection.Y = (platform.Y * h1 + platform.W * h2) / (h1 + h2);
@@ -174,7 +182,8 @@ namespace HillClimb
             if(isOnGround)
             {
                 //position.X += rotationSpeed * wheelRadius * elapsed;
-                velocity.X = rotationSpeed * wheelRadius;
+                velocity.X = rotationSpeed * wheelRadius * (float)Math.Cos(slope);
+                velocity.Y = rotationSpeed * wheelRadius * (float)Math.Sin(slope);
                 //velocity.X = rotationSpeed * MathHelper.TwoPi * wheelRadius * elapsed;
             }
             //else
