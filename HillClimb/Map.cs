@@ -53,6 +53,8 @@ namespace HillClimb
             level = 50;
             //rects.Add(new Rectangle(0, (int)(graphicsDevice.Viewport.Height - level), graphicsDevice.Viewport.Width, (int)level));
             segments.Add(new Segment(0, (int)(graphicsDevice.Viewport.Height - level), 800, (int)(graphicsDevice.Viewport.Height - level)));
+            segments.Add(new Segment(5, 0, 5, 210));
+            segments.Add(new Segment(0, 5, 800, 5));
             //platforms.Add(new Vector4(200, 300, 500, 300));
             segments.Add(new Segment(0, 200, 400, 430));
 

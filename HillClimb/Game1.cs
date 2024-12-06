@@ -28,9 +28,12 @@ namespace HillClimb
 
         public Game1()
         {
+
             graphics = new GraphicsDeviceManager(this);
             map = new Map();
 
+            graphics.SynchronizeWithVerticalRetrace = false;
+            this.IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -72,6 +75,8 @@ namespace HillClimb
         {
             //world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
             //world.
+
+            Debug.WriteLine(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();

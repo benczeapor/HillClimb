@@ -77,10 +77,10 @@ namespace HillClimb
             foreach(Segment segment in segments)
             {
 
-                if (position.Y > segment.Y && position.Y > segment.W)
-                {
-                    continue;
-                }
+                //if (position.Y > segment.Y && position.Y > segment.W)
+                //{
+                //    continue;
+                //}
 
                 float d1 = (float)Math.Sqrt((position.X - segment.X) * (position.X - segment.X) + (position.Y - segment.Y) * (position.Y - segment.Y));
                 float d2 = (float)Math.Sqrt((position.X - segment.Z) * (position.X - segment.Z) + (position.Y - segment.W) * (position.Y - segment.W));
@@ -89,10 +89,10 @@ namespace HillClimb
                 float a1 = (float)Math.Acos((d1*d1 + d3*d3 - d2*d2) / (2 * d1 * d3));
                 float a2 = (float)Math.Acos((d2*d2 + d3*d3 - d1*d1) / (2 * d2 * d3));
 
-                if(a1 > Math.PI / 2 || a2 > Math.PI / 2 && velocity.X == 0) // if it doesn't intersect
-                {
-                    continue;
-                }
+                //if(a1 > Math.PI / 2 || a2 > Math.PI / 2 && velocity.X == 0) // if it doesn't intersect
+                //{
+                //    continue;
+                //}
 
                 slope = (float)Math.Asin(Math.Abs(segment.Y - segment.W) / d3);
 
@@ -133,12 +133,12 @@ namespace HillClimb
                 //    minD = distance;
                 //}
 
-                Debug.Write(h1);
-                Debug.Write(", ");
-                Debug.Write(h2);
-                //Debug.Write("\n");
-                Debug.Write(", ");
-                Debug.WriteLine(d3);
+                //Debug.Write(h1);
+                //Debug.Write(", ");
+                //Debug.Write(h2);
+                ////Debug.Write("\n");
+                //Debug.Write(", ");
+                //Debug.WriteLine(d3);
 
                 if (distance <= touchThreshold + wheelRadius)
                 {
