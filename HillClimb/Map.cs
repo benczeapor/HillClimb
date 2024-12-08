@@ -10,6 +10,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace HillClimb
 {
@@ -52,11 +53,22 @@ namespace HillClimb
 
             level = 50;
             //rects.Add(new Rectangle(0, (int)(graphicsDevice.Viewport.Height - level), graphicsDevice.Viewport.Width, (int)level));
-            segments.Add(new Segment(0, (int)(graphicsDevice.Viewport.Height - level), 800, (int)(graphicsDevice.Viewport.Height - level)));
-            segments.Add(new Segment(5, 0, 5, 210));
-            segments.Add(new Segment(0, 5, 800, 5));
+            //segments.Add(new Segment(0, (int)(graphicsDevice.Viewport.Height - level), 800, (int)(graphicsDevice.Viewport.Height - level)));
+
             //platforms.Add(new Vector4(200, 300, 500, 300));
-            segments.Add(new Segment(0, 200, 400, 430));
+            //segments.Add(new Segment(0, 200, 400, 430));
+
+            //segments.Add(new Segment(0, 480, 800, 0));
+
+            //segments.Add(new Segment(100, 100, 600, 400, 1));
+
+            segments.Add(new Segment(0, 100, 100, 400, 1));
+            segments.Add(new Segment(100, 400, 300, 450, 2));
+            //segments.Add(new Segment(300, 450, 350, 450, 3));
+            segments.Add(new Segment(600, 300, 800, 300, 4));
+            segments.Add(new Segment(300, 450, 600, 300, 5));
+
+            //segments.Add(new Segment(200, 240, 600, 240, 5));
 
             wheel = new Wheel(this);
             wheel.LoadContent(contentManager);
@@ -66,8 +78,10 @@ namespace HillClimb
         {
             wheel.Update(gameTime);
 
-            segments.Sort((x, y) => y.Distance.CompareTo(x.Distance));
+            //segments.Sort((x, y) => y.Distance.CompareTo(x.Distance));
+            //MouseState ms = Mouse.GetState();
 
+            //Debug.WriteLine(segments[0].calculateDistance(new Vector2(ms.X, ms.Y)));
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -80,14 +94,7 @@ namespace HillClimb
 
             foreach (Segment segment in segments)
             {
-                float length = (float)Math.Sqrt((segment.X - segment.Z) * (segment.X - segment.Z) + (segment.Y - segment.W) * (segment.Y - segment.W));
-                float rotation = (float)Math.Asin((Math.Abs(segment.W - segment.Y) / length));
-
-                Rectangle rect = new Rectangle((int)segment.X, (int)segment.Y, (int)length, 20);
-
-                spriteBatch.Draw(texture, rect, null, Color.Black, rotation, new Vector2(0, 0), SpriteEffects.None, 1);
-
-                spriteBatch.DrawLine(segment.X, segment.Y, segment.Z, segment.W, Color.Blue);
+                segment.Draw(spriteBatch, gameTime, texture);    
             }
 
             //spriteBatch.Draw(texture, new Rectangle(49, (int)(480 - level), (int)(MathHelper.TwoPi * 25), 10), Color.Yellow);

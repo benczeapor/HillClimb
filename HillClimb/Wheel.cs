@@ -10,6 +10,8 @@ using FarseerPhysics.Dynamics;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using MonoGame.Extended.Graphics;
+//using System.Drawing;
 
 namespace HillClimb
 {
@@ -33,7 +35,12 @@ namespace HillClimb
         private float wheelRotation;
         private bool isDrive;
 
+        private Segment currentSegment;
+        private Segment nextSegment;
+
         private Vector2 projection;
+
+        private bool willPhaseTrough;
 
         private Vector2 position;
         public Vector2 Position
@@ -55,6 +62,11 @@ namespace HillClimb
             set { map = value; }
         }
 
+        public float Radius
+        {
+            get { return wheelRadius; }
+        }
+
         private bool isOnGround;
         public bool IsOnGround
         {
@@ -66,6 +78,50 @@ namespace HillClimb
             Map = map;
         }
 
+        public void correctPosition()
+        {
+            Vector2 perpendicular;
+
+            slope = Math.Abs(slope);
+
+            if(currentSegment == null)
+            {
+                return;
+            }
+
+            if(currentSegment.Y > currentSegment.W)
+            {
+                //Debug.WriteLine("1");
+                perpendicular.X = - (float)Math.Abs(Math.Cos(slope + (Math.PI / 2)));
+                perpendicular.Y = - (float)Math.Abs(Math.Sin(slope + (Math.PI / 2)));
+            }
+            else
+            {
+                //Debug.WriteLine("2");
+                perpendicular.X = (float)Math.Cos(slope - (Math.PI / 2));
+                perpendicular.Y = (float)Math.Sin(slope - (Math.PI / 2));
+            }
+
+            
+
+            
+            //currentSegment.Color = Color.White;
+
+            
+
+            float error = wheelRadius - currentSegment.calculateDistance(position);
+
+            if (error > 0)
+            {
+                position += perpendicular * error;
+            }
+
+            //Debug.WriteLine(distance);
+
+            //projection.X = position.X + 100 * (float)Math.Cos(slope + Math.PI / 2);
+            //projection.Y = position.Y + 100 * (float)Math.Sin(slope + Math.PI / 2);
+        }
+
         public void handleCollision(GameTime gameTime)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -73,127 +129,96 @@ namespace HillClimb
 
             //Rectangle rect = map.Rect;
             List<Segment> segments = map.Segments;
-
-            foreach(Segment segment in segments)
+            float minDist = -1;
+            foreach (Segment segment in segments)
             {
-
-                //if (position.Y > segment.Y && position.Y > segment.W)
-                //{
-                //    continue;
-                //}
-
-                float d1 = (float)Math.Sqrt((position.X - segment.X) * (position.X - segment.X) + (position.Y - segment.Y) * (position.Y - segment.Y));
-                float d2 = (float)Math.Sqrt((position.X - segment.Z) * (position.X - segment.Z) + (position.Y - segment.W) * (position.Y - segment.W));
-                float d3 = (float)Math.Sqrt((segment.X - segment.Z) * (segment.X - segment.Z) + (segment.Y - segment.W) * (segment.Y - segment.W));
-
-                float a1 = (float)Math.Acos((d1*d1 + d3*d3 - d2*d2) / (2 * d1 * d3));
-                float a2 = (float)Math.Acos((d2*d2 + d3*d3 - d1*d1) / (2 * d2 * d3));
-
-                //if(a1 > Math.PI / 2 || a2 > Math.PI / 2 && velocity.X == 0) // if it doesn't intersect
-                //{
-                //    continue;
-                //}
-
-                slope = (float)Math.Asin(Math.Abs(segment.Y - segment.W) / d3);
-
-                //Debug.WriteLine(slope.ToString());
-
-                //float distance = (float)(Math.Abs((segment.Z - segment.X) * (position.Y - segment.Y) - (segment.W - segment.Y) * (position.X - segment.X)) / Math.Sqrt((segment.Z - segment.X) * (segment.Z - segment.X) + (segment.W - segment.Y) * (segment.W - segment.Y)));
-                //float nextDistance = (float)(Math.Abs((segment.Z - segment.X) * ((position.Y + velocity.Y * elapsed) - segment.Y) - (segment.W - segment.Y) * ((position.X + velocity.X * elapsed) - segment.X)) / Math.Sqrt((segment.Z - segment.X) * (segment.Z - segment.X) + (segment.W - segment.Y) * (segment.W - segment.Y)));
-
                 float distance = segment.calculateDistance(position);
-                float nextDistance = segment.calculateDistance(position + velocity * elapsed);
 
-                //if(distance > 2 * wheelRadius)
-                //{
-                //    continue;
-                //}
-
-                float h = (float)(Math.Sin(a1) * d1 + Math.Sin(a2) * d2) / 2;
-
-                float h1 = (float)Math.Sqrt(d1*d1 - h*h);
-                float h2 = (float)Math.Sqrt(d2*d2 - h * h);
-
-                projection.X = position.X + (100 * (float)Math.Cos(slope));
-                projection.Y = position.Y + (100 * (float)Math.Sin(slope));
-
-                //projection.X = (platform.X * h1 + platform.Z * h2) / (h1 + h2);
-                //projection.Y = (platform.Y * h1 + platform.W * h2) / (h1 + h2);
-
-                //projection.X = (platform.X + platform.Z) / 2;
-                //projection.Y = (platform.Y + platform.W) / 2;
-
-                //if(d1 > d3 || d2 > d3)
-                //{
-                //    distance = -1;
-                //}
-
-                //if(minD > distance)
-                //{
-                //    minD = distance;
-                //}
-
-                //Debug.Write(h1);
-                //Debug.Write(", ");
-                //Debug.Write(h2);
-                ////Debug.Write("\n");
-                //Debug.Write(", ");
-                //Debug.WriteLine(d3);
-
-                if (distance <= touchThreshold + wheelRadius)
+                if(distance > 4 * wheelRadius)
                 {
-                    isOnGround = true;
+                    continue;
                 }
-                else
+
+                if(minDist == -1 || minDist > distance)
                 {
-                    isOnGround = false;
-                }
-                //if()
-                if (distance <= wheelRadius)
-                {
-                    velocity.Y = (float)(-velocity.Y * 0.5);
-                    //velocity.Y = 0;
-                }
-                else if (nextDistance <= wheelRadius)
-                {
-                    //velocity.Y = 0;
-                    velocity.Y = (float)(-velocity.Y * 0.5);
-                    //position.Y = rect.Y - (wheelRadius);
+                    minDist = distance;
+                    currentSegment = segment;
+                    slope = segment.Slope;
                 }
             }
 
-            //temp
-            //if (position.X - wheelRadius <= 0)
-            //{
-            //    velocity.X *= -1;
-            //}
-            //if (position.X + wheelRadius >= 800)
-            //{
-            //    velocity.X *= -1;
-            //}
+            if(minDist == -1)
+            {
+                isOnGround = false;
+                currentSegment = null;
+                return;
+            }
+
+            if (minDist <= wheelRadius + 2.5)
+            {
+                //Debug.WriteLine("fasz");
+                isOnGround = true;
+
+                //segment.Color = Color.Red;
+            }
+            else
+            {
+                isOnGround = false;
+            }
+
+            if (minDist <= wheelRadius)
+            {
+                velocity.Y = (float)(-velocity.Y * 0.5);
+            }
         }
 
         public void applyPhysics(GameTime gameTime)
         {
+            handleCollision(gameTime);
+
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             velocity.Y += gravity * elapsed;
 
-            if(isOnGround)
+            if (isOnGround)
             {
+                
                 //position.X += rotationSpeed * wheelRadius * elapsed;
-                velocity.X = rotationSpeed * wheelRadius * (float)Math.Cos(slope);
-                velocity.Y = rotationSpeed * wheelRadius * (float)Math.Sin(slope);
+
+                if(slope <= 0)
+                {
+                    Debug.WriteLine("1");
+                    velocity.X = rotationSpeed * wheelRadius * (float)Math.Abs(Math.Cos(slope));
+                    velocity.Y = rotationSpeed * wheelRadius * (float)Math.Abs(Math.Sin(slope));
+                }
+                else
+                {
+                    Debug.WriteLine("2");
+                    velocity.X = rotationSpeed * wheelRadius * (float)Math.Cos(-slope);
+                    velocity.Y = rotationSpeed * wheelRadius * (float)Math.Sin(-slope);
+                }
+                
+
+                
+
+
+                //projection = position + 10 * velocity;
                 //velocity.X = rotationSpeed * MathHelper.TwoPi * wheelRadius * elapsed;
             }
+            else
+            {
+                //Debug.WriteLine("asder");
+            }
+
+            position += velocity * elapsed;
+            correctPosition();
+
             //else
             //{
             //    rotationSpeed *= airDrag;
             //    velocity.X += rotationSpeed * (1 / airDrag) * elapsed;
             //}
 
-            handleCollision(gameTime);
-            position += velocity * elapsed;
             //position += velocity;
 
         }
@@ -240,6 +265,11 @@ namespace HillClimb
                     rotationSpeed = maxRotationSpeed;
                 }
             }
+
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                velocity = Vector2.Zero;
+            }
         }
 
         public void Initialize()
@@ -276,6 +306,7 @@ namespace HillClimb
             //spriteBatch.Draw(texture, Vector2.Subtract(position, new Vector2(wheelRadius, wheelRadius)), null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(texture, position, null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
             spriteBatch.DrawLine(projection, position, Color.Red);
+            //spriteBatch.DrawLine(currentSegment.X, currentSegment.Y, currentSegment.Z, currentSegment.W, Color.Blue);
 
             spriteBatch.End();
         }
