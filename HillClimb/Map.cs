@@ -65,8 +65,8 @@ namespace HillClimb
             segments.Add(new Segment(0, 100, 100, 400, 1));
             segments.Add(new Segment(100, 400, 300, 450, 2));
             //segments.Add(new Segment(300, 450, 350, 450, 3));
-            segments.Add(new Segment(600, 300, 800, 300, 4));
-            segments.Add(new Segment(300, 450, 600, 300, 5));
+            segments.Add(new Segment(500, 300, 800, 300, 4));
+            segments.Add(new Segment(300, 450, 500, 300, 5));
 
             //segments.Add(new Segment(200, 240, 600, 240, 5));
 

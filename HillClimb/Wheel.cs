@@ -133,6 +133,12 @@ namespace HillClimb
             foreach (Segment segment in segments)
             {
                 float distance = segment.calculateDistance(position);
+                float nextDist = segment.calculateDistance(position + velocity * elapsed);
+
+                if(nextDist > distance)
+                {
+                    continue;
+                }
 
                 if(distance > 4 * wheelRadius)
                 {
@@ -156,7 +162,7 @@ namespace HillClimb
 
             if (minDist <= wheelRadius + 2.5)
             {
-                //Debug.WriteLine("fasz");
+                //Debug.WriteLine("fasz");4
                 isOnGround = true;
 
                 //segment.Color = Color.Red;
