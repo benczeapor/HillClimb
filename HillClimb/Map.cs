@@ -18,6 +18,7 @@ namespace HillClimb
     {
         private float level;//
 
+        private Vehicle vehicle;
         private Texture2D texture;
         
 
@@ -40,7 +41,8 @@ namespace HillClimb
 
         public void Initialize()
         {
-            wheel.Initialize();
+            //wheel.Initialize();
+            vehicle.Initialize();
         }
 
         public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch , ContentManager contentManager)
@@ -67,30 +69,37 @@ namespace HillClimb
             //segments.Add(new Segment(300, 450, 350, 450, 3));
             segments.Add(new Segment(500, 300, 800, 300, 4));
             segments.Add(new Segment(300, 450, 500, 300, 5));
+            segments.Add(new Segment(800, 300, 801, 100, 6));
 
             //segments.Add(new Segment(200, 240, 600, 240, 5));
 
-            wheel = new Wheel(this);
-            wheel.LoadContent(contentManager);
+            //wheel = new Wheel(this);
+            //wheel.LoadContent(contentManager);
+            vehicle = new Vehicle();
+            vehicle.Map = this;
+            vehicle.LoadContent(contentManager);
         }
 
         public void Update(GameTime gameTime)
         {
-            wheel.Update(gameTime);
+            //wheel.Update(gameTime);
 
             //segments.Sort((x, y) => y.Distance.CompareTo(x.Distance));
             //MouseState ms = Mouse.GetState();
 
             //Debug.WriteLine(segments[0].calculateDistance(new Vector2(ms.X, ms.Y)));
+            vehicle.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            wheel.Draw(spriteBatch, gameTime);
+            //wheel.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin();
 
             //spriteBatch.Draw(texture, new Rectangle(0, (int)(480 - level), 800, (int)level), Color.Black);
+
+            vehicle.Draw(spriteBatch, gameTime);
 
             foreach (Segment segment in segments)
             {

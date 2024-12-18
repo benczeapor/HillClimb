@@ -34,6 +34,7 @@ namespace HillClimb
         private float wheelRadius;
         private float wheelRotation;
         private bool isDrive;
+        private float mass;
 
         private Segment currentSegment;
         private Segment nextSegment;
@@ -46,7 +47,7 @@ namespace HillClimb
         public Vector2 Position
         {
             get { return position; }
-            //set { position = value; }
+            set { position = value; }
         }
 
         private Vector2 velocity;
@@ -71,6 +72,12 @@ namespace HillClimb
         public bool IsOnGround
         {
             get { return isOnGround; }
+        }
+
+        public float Mass
+        {
+            get { return mass; }
+            set { mass = value; }
         }
 
         public Wheel(Map map)
@@ -160,7 +167,7 @@ namespace HillClimb
                 return;
             }
 
-            if (minDist <= wheelRadius + 2.5)
+            if (minDist <= wheelRadius + 0.1)
             {
                 //Debug.WriteLine("fasz");4
                 isOnGround = true;
@@ -183,7 +190,7 @@ namespace HillClimb
             handleCollision(gameTime);
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            
             velocity.Y += gravity * elapsed;
 
             if (isOnGround)
@@ -193,21 +200,17 @@ namespace HillClimb
 
                 if(slope <= 0)
                 {
-                    Debug.WriteLine("1");
-                    velocity.X = rotationSpeed * wheelRadius * (float)Math.Abs(Math.Cos(slope));
-                    velocity.Y = rotationSpeed * wheelRadius * (float)Math.Abs(Math.Sin(slope));
+                    //Debug.WriteLine("1");
+                    velocity.X = rotationSpeed * mass * wheelRadius * (float)Math.Abs(Math.Cos(slope));
+                    velocity.Y = rotationSpeed * mass * wheelRadius * (float)Math.Abs(Math.Sin(slope));
                 }
                 else
                 {
-                    Debug.WriteLine("2");
-                    velocity.X = rotationSpeed * wheelRadius * (float)Math.Cos(-slope);
-                    velocity.Y = rotationSpeed * wheelRadius * (float)Math.Sin(-slope);
+                    //Debug.WriteLine("2");
+                    velocity.X = rotationSpeed * mass * wheelRadius * (float)Math.Cos(-slope);
+                    velocity.Y = rotationSpeed * mass * wheelRadius * (float)Math.Sin(-slope);
                 }
                 
-
-                
-
-
                 //projection = position + 10 * velocity;
                 //velocity.X = rotationSpeed * MathHelper.TwoPi * wheelRadius * elapsed;
             }
@@ -217,7 +220,7 @@ namespace HillClimb
             }
 
             position += velocity * elapsed;
-            correctPosition();
+            //correctPosition();
 
             //else
             //{
@@ -259,7 +262,6 @@ namespace HillClimb
                     rotationSpeed = -maxRotationSpeed;
                 }
             }
-
             if (kstate.IsKeyDown(Keys.Right))
             {
                 //velocity.X += force;
@@ -271,6 +273,10 @@ namespace HillClimb
                     rotationSpeed = maxRotationSpeed;
                 }
             }
+            //else
+            //{
+            //    //rotationSpeed *= 0.95f;
+            //}
 
             if (kstate.IsKeyDown(Keys.Space))
             {
@@ -283,14 +289,15 @@ namespace HillClimb
 
         }
 
-        public void LoadContent(ContentManager content)
+        public void LoadContent(ContentManager contentManager)
         {
-            position = new Vector2(50, 50);
-            wheelRadius = 25;
+            position = new Vector2(0, 0);
+            wheelRadius = 20;
 
-            texture = content.Load<Texture2D>("Textures/ball");
+            texture = contentManager.Load<Texture2D>("Textures/wheel");
             wheelRotation = 0;
             rotationSpeed = 0;
+            mass = 1;
         }
 
         public void Update(GameTime gameTime)
@@ -302,19 +309,21 @@ namespace HillClimb
             applyPhysics(gameTime);
 
             wheelRotation = (wheelRotation + rotationSpeed * elapsed) % MathHelper.TwoPi;
+
+            projection = position + velocity;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Begin();
+            //spriteBatch.Begin();
 
             //spriteBatch.Draw(texture, Vector2.Subtract(position, new Vector2(wheelRadius, wheelRadius)), Color.White);
             //spriteBatch.Draw(texture, Vector2.Subtract(position, new Vector2(wheelRadius, wheelRadius)), null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(texture, position, null, Color.White, wheelRotation, new Vector2(wheelRadius, wheelRadius), 1f, SpriteEffects.None, 0f);
-            spriteBatch.DrawLine(projection, position, Color.Red);
+            //spriteBatch.DrawLine(projection, position, Color.Red);
             //spriteBatch.DrawLine(currentSegment.X, currentSegment.Y, currentSegment.Z, currentSegment.W, Color.Blue);
 
-            spriteBatch.End();
+            //spriteBatch.End();
         }
     }
 }

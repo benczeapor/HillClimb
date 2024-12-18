@@ -72,8 +72,8 @@ namespace HillClimb
         private void init()
         {
             float hitboxHeight = 50;
-            float d3 = (float)Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
-            slope = (float)Math.Asin((p1.Y - p2.Y) / d3);
+            float length = (float)Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+            slope = (float)Math.Asin((p1.Y - p2.Y) / length);
             color = Color.Black;
             if (P1.Y <= P2.Y)
             {
