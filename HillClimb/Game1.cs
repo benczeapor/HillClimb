@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.ViewportAdapters;
+
+
 
 //using FarseerPhysics.Dynamics;
 //using FarseerPhysics.Factories;
@@ -16,6 +20,8 @@ namespace HillClimb
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private SpriteFont font;
+        private OrthographicCamera camera;
         private Map map;
 
         //private World world;
@@ -25,6 +31,7 @@ namespace HillClimb
         const float pixelToUnit = 1 / unitToPixel;
         private Texture2D texture;
         private Texture2D groundTexture;
+        private int fps;
 
         public Game1()
         {
@@ -38,9 +45,19 @@ namespace HillClimb
 
         protected override void Initialize()
         {
+            graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
+
             base.Initialize();
 
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1280, 720);
+            camera = new OrthographicCamera(viewportAdapter);
+
+
             map.Initialize();
+            map.Camera = camera;
         }
 
         protected override void LoadContent()
@@ -59,7 +76,7 @@ namespace HillClimb
 
             //texture = Content.Load<Texture2D>("Textures/ball");
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            font = Content.Load<SpriteFont>("Font");
             //groundTexture = new Texture2D(GraphicsDevice, 1, 1);
             //Color[] color = { Color.White };
             //groundTexture.SetData<Color>(color);
@@ -70,26 +87,33 @@ namespace HillClimb
 
         protected override void Update(GameTime gameTime)
         {
-            //world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-            //world.
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             base.Update(gameTime);
+            fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
 
-            //Debug.WriteLine(map.Wheel.Position);
 
-            map.Update(gameTime);
+            map.Update(gameTime, camera);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.SkyBlue);
 
+            var transformMatrix = camera.GetViewMatrix();
+
+            
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, transformMatrix: transformMatrix);
+
             map.Draw(spriteBatch, gameTime);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+            //string output = "alma";
+            string fpsS = fps.ToString();
+            spriteBatch.DrawString(font, fpsS, camera.ScreenToWorld(new Vector2(1280 - (font.MeasureString(fpsS).X * 2), 0)), Color.Red, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0.5f);
+            string distanceS = map.Distance.ToString();
+            spriteBatch.DrawString(font, distanceS, camera.ScreenToWorld(new Vector2(5, 0)), Color.Red, 0, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0.5f);
 
             //Vector2 scale = new Vector2(50 / (float)texture.Width, 50 / (float)texture.Height);
 

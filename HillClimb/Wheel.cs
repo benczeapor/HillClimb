@@ -262,7 +262,7 @@ namespace HillClimb
                     rotationSpeed = -maxRotationSpeed;
                 }
             }
-            if (kstate.IsKeyDown(Keys.Right))
+            else if (kstate.IsKeyDown(Keys.Right))
             {
                 //velocity.X += force;
                 //rotationSpeed = 2;
@@ -273,10 +273,10 @@ namespace HillClimb
                     rotationSpeed = maxRotationSpeed;
                 }
             }
-            //else
-            //{
-            //    //rotationSpeed *= 0.95f;
-            //}
+            else
+            {
+                rotationSpeed *= 0.95f;
+            }
 
             if (kstate.IsKeyDown(Keys.Space))
             {

@@ -31,6 +31,12 @@ namespace HillClimb
             set { frontWheel = value; }
         }
 
+        public Wheel RearWheel
+        {
+            get { return rearWheel; }
+            set { rearWheel = value; }
+        }
+
         public Vehicle()
         {
 
@@ -72,7 +78,7 @@ namespace HillClimb
             correction.X = (float)Math.Cos(slope);
             correction.Y = (float)Math.Sin(slope);
 
-            Debug.WriteLine(correction.ToString() + ", " + error.ToString());
+            //Debug.WriteLine(correction.ToString() + ", " + error.ToString());
 
             //if (frontWheel.Position.X < rearWheel.Position.X)
             //{

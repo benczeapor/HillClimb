@@ -18,7 +18,7 @@ namespace HillClimb
         private float slope;
         private float distance;
         private Color color;
-        private int id;
+        //private int id;
 
         public Vector2 P1
         {
@@ -64,10 +64,10 @@ namespace HillClimb
             set { color = value; }
         }
 
-        public int Id
-        {
-            get { return id; }
-        }
+        //public int Id
+        //{
+        //    get { return id; }
+        //}
 
         private void init()
         {
@@ -89,10 +89,10 @@ namespace HillClimb
                 R2.X = P2.X - hitboxHeight * (float)Math.Abs(Math.Cos(slope - (Math.PI / 2)));
                 R2.Y = P2.Y - hitboxHeight * (float)Math.Abs(Math.Sin(slope - (Math.PI / 2)));
             }
-            Debug.WriteLine(id.ToString() + ": " + (180/Math.PI) * slope);
+            //Debug.WriteLine(id.ToString() + ": " + (180/Math.PI) * slope);
         }
 
-        public Segment(Vector2 p1, Vector2 p2, int id)
+        public Segment(Vector2 p1, Vector2 p2)
         {
             if (p1.X < p2.X)
             {
@@ -104,12 +104,12 @@ namespace HillClimb
                 this.p1 = p2;
                 this.p2 = p1;
             }
-            this.id = id;
+            //this.id = id;
             init();
             
         }
 
-        public Segment(float x, float y, float z, float w, int id)
+        public Segment(float x, float y, float z, float w)
         {
             if( x < z)
             {
@@ -121,7 +121,7 @@ namespace HillClimb
                 this.p1 = new Vector2(z, w);
                 this.p2 = new Vector2(x, y);
             }
-            this.id = id;
+            //this.id = id;
             //this.id = id;
             init();
             
