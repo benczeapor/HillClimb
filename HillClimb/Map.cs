@@ -167,6 +167,13 @@ namespace HillClimb
                 segments.Add(new Segment(lastPoint, new Vector2(x, y)));
             }
 
+            //Debug.WriteLine(segments.Count);
+
+            if(segments.Count > 100)
+            {
+                segments.RemoveAt(0);
+            }
+
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

@@ -80,12 +80,25 @@ namespace HillClimb
             set { mass = value; }
         }
 
+        public float RotationSpeed
+        {
+            get { return rotationSpeed; }
+            set { rotationSpeed = value; }
+        }
+
+        private Vector2 force;
+        public Vector2 Force
+        {
+            get { return force; }
+            set { force = value; }
+        }
+
         public Wheel(Map map)
         {
             Map = map;
         }
 
-        public void correctPosition()
+        public void CorrectPosition()
         {
             Vector2 perpendicular;
 
@@ -129,7 +142,7 @@ namespace HillClimb
             //projection.Y = position.Y + 100 * (float)Math.Sin(slope + Math.PI / 2);
         }
 
-        public void handleCollision(GameTime gameTime)
+        public void HandleCollision(GameTime gameTime)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -185,9 +198,9 @@ namespace HillClimb
             }
         }
 
-        public void applyPhysics(GameTime gameTime)
+        public void ApplyPhysics(GameTime gameTime)
         {
-            handleCollision(gameTime);
+            HandleCollision(gameTime);
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             
@@ -232,30 +245,14 @@ namespace HillClimb
 
         }
 
-        public void handleInput(GameTime gameTime)
+        public void HandleInput(GameTime gameTime)
         {
-            //float updatedWheelSpeed = wheelSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float force = 100;
 
             var kstate = Keyboard.GetState();
 
-            if (kstate.IsKeyDown(Keys.Up))
-            {
-                //velocity.Y -= force;
-            }
-
-            if (kstate.IsKeyDown(Keys.Down))
-            {
-                //velocity.Y += force;
-            }
-
             if (kstate.IsKeyDown(Keys.Left))
             {
-                //velocity.X -= force;
-
-
-
                 rotationSpeed -= rotationAcceleration * elapsed;
                 if (rotationSpeed < -maxRotationSpeed)
                 {
@@ -264,9 +261,6 @@ namespace HillClimb
             }
             else if (kstate.IsKeyDown(Keys.Right))
             {
-                //velocity.X += force;
-                //rotationSpeed = 2;
-
                 rotationSpeed += rotationAcceleration * elapsed;
                 if (rotationSpeed > maxRotationSpeed)
                 {
@@ -275,12 +269,7 @@ namespace HillClimb
             }
             else
             {
-                rotationSpeed *= 0.95f;
-            }
-
-            if (kstate.IsKeyDown(Keys.Space))
-            {
-                velocity = Vector2.Zero;
+                //rotationSpeed *= 0.95f;
             }
         }
 
@@ -304,9 +293,11 @@ namespace HillClimb
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            //velocity += force * elapsed;
+
             //Debug.WriteLine(isOnGround);
-            handleInput(gameTime);
-            applyPhysics(gameTime);
+            HandleInput(gameTime);
+            ApplyPhysics(gameTime);
 
             wheelRotation = (wheelRotation + rotationSpeed * elapsed) % MathHelper.TwoPi;
 

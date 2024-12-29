@@ -19,6 +19,8 @@ namespace HillClimb
         private Wheel rearWheel;
         private Texture2D texture;
 
+        private Vector2 h1, h2, h3, h4; // points for item collection hitbox
+
         public Map Map 
         { 
             get { return map; } 
@@ -35,6 +37,94 @@ namespace HillClimb
         {
             get { return rearWheel; }
             set { rearWheel = value; }
+        }
+
+        public void HandleInput(GameTime gameTime)
+        {
+            var kstate = Keyboard.GetState();
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Vector2 rearPos = rearWheel.Position;
+            Vector2 frontPos = frontWheel.Position;
+
+            float rotationSpeed = 100;
+
+            if (!frontWheel.IsOnGround && !rearWheel.IsOnGround)
+            {
+                if (kstate.IsKeyDown(Keys.Left))
+                {
+
+                    rearPos.Y -= rotationSpeed * elapsed * (float)Math.Sin(slope - Math.PI / 2);
+                    rearPos.X += rotationSpeed * elapsed * (float)Math.Cos(slope - Math.PI / 2);
+                    frontPos.Y -= rotationSpeed * elapsed * (float)Math.Sin(slope + Math.PI / 2);
+                    frontPos.X += rotationSpeed * elapsed * (float)Math.Cos(slope + Math.PI / 2);
+
+                        
+                    //Debug.WriteLine(rotationSpeed * elapsed * (float)Math.Cos(slope));
+                }
+                if (kstate.IsKeyDown(Keys.Right))
+                {
+
+                    rearPos.Y += rotationSpeed * elapsed * (float)Math.Sin(slope - Math.PI / 2);
+                    rearPos.X -= rotationSpeed * elapsed * (float)Math.Cos(slope - Math.PI / 2);
+                    frontPos.Y += rotationSpeed * elapsed * (float)Math.Sin(slope + Math.PI / 2);
+                    frontPos.X -= rotationSpeed * elapsed * (float)Math.Cos(slope + Math.PI / 2);
+                }
+            }
+            else if(frontWheel.IsOnGround)
+            {
+                if (kstate.IsKeyDown(Keys.Left))
+                {
+
+                }
+                if (kstate.IsKeyDown(Keys.Right))
+                {
+
+                }
+            }
+            else if(rearWheel.IsOnGround)
+            {
+                if (kstate.IsKeyDown(Keys.Left))
+                {
+
+                }
+                if (kstate.IsKeyDown(Keys.Right))
+                {
+
+                }
+            }
+
+            rearWheel.Position = rearPos;
+            frontWheel.Position = frontPos;
+
+        }
+
+        private void UpdateHitbox(GameTime gameTime)
+        {
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            h1 = rearWheel.Position;
+            h2 = frontWheel.Position;
+            if(slope < Math.PI / 2)
+            {
+                h3.Y = rearWheel.Position.Y + 50 * (float)Math.Sin(slope + Math.PI / 2);
+                h3.X = rearWheel.Position.X + 50 * (float)Math.Cos(slope + Math.PI / 2);
+            }
+            
+            else
+            {
+                h3.X = 0;
+                h3.Y = 0;
+                //h3.Y = rearWheel.Position.Y + 50 * (float)Math.Abs(Math.Sin(slope - Math.PI / 2));
+                //h3.X = rearWheel.Position.X + 50 * (float)Math.Abs(Math.Cos(slope - Math.PI / 2));
+            }
+
+            h4.Y = frontWheel.Position.Y + 50 * (float)Math.Sin(slope + Math.PI / 2);
+            h4.X = frontWheel.Position.X + 50 * (float)Math.Cos(slope + Math.PI / 2);
+
+            //h1.Y += rearWheel.Radius;
+            //h2.Y += frontWheel.Radius;
+            //h1.X -= rearWheel.Radius;
+            //h2.X += frontWheel.Radius;
         }
 
         public Vehicle()
@@ -68,15 +158,34 @@ namespace HillClimb
             frontWheel.Update(gameTime);
             rearWheel.Update(gameTime);
 
+            HandleInput(gameTime);
+
             float distance = Vector2.Distance(frontWheel.Position, rearWheel.Position);
-            slope = (float)(Math.Asin((frontWheel.Position.Y - rearWheel.Position.Y) / distance));
+
+            //float slopeSine = ;
+            slope = (float)(Math.Asin((rearWheel.Position.Y - frontWheel.Position.Y) / distance));
+
+
+            if (frontWheel.Position.X > rearWheel.Position.X)
+            {
+                slope = (float)(Math.Asin((rearWheel.Position.Y - frontWheel.Position.Y) / distance));
+                
+            }
+            else
+            {
+                slope = (float)(Math.Asin((frontWheel.Position.Y - rearWheel.Position.Y) / distance));
+                slope += (float)Math.PI;
+            }
+
+            h1 = frontWheel.Position;
+            h2 = rearWheel.Position;
 
             float error = wheelBase - distance;
 
             Vector2 correction = new Vector2(0, 0);
 
-            correction.X = (float)Math.Cos(slope);
-            correction.Y = (float)Math.Sin(slope);
+            correction.X = (float)((frontWheel.Position.X - rearWheel.Position.X) / wheelBase);
+            correction.Y = (float)((frontWheel.Position.Y - rearWheel.Position.Y) / wheelBase);
 
             //Debug.WriteLine(correction.ToString() + ", " + error.ToString());
 
@@ -84,6 +193,11 @@ namespace HillClimb
             //{
             //    error *= -1;
             //}
+
+            Debug.WriteLine(correction);
+            h3 = frontWheel.Position - correction * 100;
+            h4 = rearWheel.Position + correction * 100;
+
 
             if (error > 0.1 || error < -0.1)
             {
@@ -102,8 +216,12 @@ namespace HillClimb
                 }
             }
 
-            frontWheel.correctPosition();
-            rearWheel.correctPosition();
+
+
+            frontWheel.CorrectPosition();
+            rearWheel.CorrectPosition();
+
+            //UpdateHitbox(gameTime);
 
         }
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -112,7 +230,10 @@ namespace HillClimb
             rearWheel.Draw(spriteBatch, gameTime);
             //spriteBatch.DrawLine(frontWheel.Position, rearWheel.Position, Color.Black, 2);
 
-            spriteBatch.Draw(texture, new Vector2(rearWheel.Position.X, rearWheel.Position.Y), null, Color.White, slope, new Vector2(50, 100), 0.65f, SpriteEffects.None, 1);
+            spriteBatch.Draw(texture, new Vector2(rearWheel.Position.X, rearWheel.Position.Y), null, Color.White, -slope, new Vector2(50, 100), 0.65f, SpriteEffects.None, 1);
+
+            //spriteBatch.DrawLine(h1, h3, Color.Red);
+            //spriteBatch.DrawLine(h2, h4, Color.Red);
         }
 
     }
