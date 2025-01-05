@@ -76,7 +76,7 @@ namespace HillClimb
 
         public Map()
         {
-
+            //this.camera = camera;
         }
 
         public Vector2 CoinPos(float x)
