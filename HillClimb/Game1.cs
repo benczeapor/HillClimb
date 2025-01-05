@@ -55,6 +55,8 @@ namespace HillClimb
             graphics = new GraphicsDeviceManager(this);
             map = new Map();
 
+            //graphics.SynchronizeWithVerticalRetrace = false;
+            //this.IsFixedTimeStep = false;
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -275,8 +277,8 @@ namespace HillClimb
             {
                 map.Draw(spriteBatch, gameTime);
 
-                string fpsS = fps.ToString();
-                spriteBatch.DrawString(font, fpsS, camera.ScreenToWorld(new Vector2(1280 - (font.MeasureString(fpsS).X * 2), 0)), Color.Red, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0.5f);
+                //string fpsS = fps.ToString();
+                //spriteBatch.DrawString(font, fpsS, camera.ScreenToWorld(new Vector2(1280 - (font.MeasureString(fpsS).X * 2), 0)), Color.Red, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0.5f);
                 string distanceS = "Distance: " + map.Distance.ToString();
                 spriteBatch.DrawString(font, distanceS, camera.ScreenToWorld(new Vector2(5, 100)), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0.5f);
 
