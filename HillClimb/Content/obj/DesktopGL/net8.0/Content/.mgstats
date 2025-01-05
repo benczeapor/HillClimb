@@ -1,0 +1,9 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Font.spritefont","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Font.xnb","FontDescriptionProcessor","SpriteFontContent",2068,152610,0.150694
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Images/title.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Images/title.xnb","TextureProcessor","Texture2DContent",38950,3639829,0.1495099
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/ball.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/ball.xnb","TextureProcessor","Texture2DContent",9738,10085,0.1395007
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/car.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/car.xnb","TextureProcessor","Texture2DContent",24005,126037,0.0709304
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/coin.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/coin.xnb","TextureProcessor","Texture2DContent",9214,16469,0.076309
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/driver.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/driver.xnb","TextureProcessor","Texture2DContent",16751,23637,0.0653736
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/fuel.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/fuel.xnb","TextureProcessor","Texture2DContent",19237,16469,0.0720337
+"D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/wheel.png","D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/wheel.xnb","TextureProcessor","Texture2DContent",9320,6485,0.00783

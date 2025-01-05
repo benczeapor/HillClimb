@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>D:/Cucc/C#/HillClimb/HillClimb/Content/Font.spritefont</SourceFile>
+  <SourceTime>2025-01-01T20:01:01.2039247+02:00</SourceTime>
+  <DestFile>D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Font.xnb</DestFile>
+  <DestTime>2025-01-05T15:40:46.9701238+02:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2024-08-16T20:05:56+03:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2024-08-16T20:05:56+03:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
