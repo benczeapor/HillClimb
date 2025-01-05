@@ -9,6 +9,7 @@ using MonoGame.Extended.ViewportAdapters;
 //using FarseerPhysics.Dynamics;
 
 using System;
+//using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -38,6 +39,18 @@ namespace HillClimb
             get { return segments; }
         }
 
+        private Fuel fuel;
+        public Fuel Fuel
+        {
+            get { return fuel; }
+        }
+
+        private Coins coins;
+        public Coins Coins
+        {
+            get { return coins; }
+        }
+
         private Wheel wheel;
         public Wheel Wheel
         {
@@ -56,8 +69,49 @@ namespace HillClimb
             set { camera = value; }
         }
 
+        public Vehicle Vehicle
+        { 
+            get { return vehicle; } 
+        }
+
         public Map()
         {
+
+        }
+
+        public Vector2 CoinPos(float x)
+        {
+            Segment above = new Segment(-1, -1, -1, -1);
+            //Debug.WriteLine(x);
+            foreach(Segment segment in Segments) 
+            {
+                if(x >= segment.X && x <= segment.Z)
+                {
+                    above = segment;
+                    break;
+                }
+            }
+            if(above.X == -1 && above.Y == -1)
+            {
+                return new Vector2(-69420, -69420);
+            }
+            //if(x == above.X)
+            //{
+            //    return above.Y - 50;
+            //}
+            //if(x == above.Z)
+            //{
+            //    return above.W - 50;
+            //}
+
+            Vector2 result = new Vector2(x, ((above.Y * (x - above.X) + above.W * (above.Z - x)) / (above.Z - above.X)));
+
+            result.X -= 30 * (float)Math.Sin(above.Slope);
+            result.Y -= 30 * (float)Math.Cos(above.Slope);
+
+            return result;
+
+            //return  - 50;
 
         }
 
@@ -65,14 +119,18 @@ namespace HillClimb
         {
             //wheel.Initialize();
             vehicle.Initialize();
+            coins.Initialize();
+            fuel.Initialize();
         }
 
         public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch , ContentManager contentManager)
-        {   
+        {
+            
+
             random = new Random(69420);
             noise = new FastNoiseLite();
             noise.SetNoiseType(FastNoiseLite.NoiseType.Value);
-            noise.SetFrequency(0.005f);
+            noise.SetFrequency(0.0025f);
 
             texture = new Texture2D(graphicsDevice, 1, 1);
             Color[] color = {Color.White};
@@ -86,9 +144,15 @@ namespace HillClimb
             segments.Add(new Segment(0, 400, 400, 400));
             //segments.Add(new Segment(400, 400, 800, 300));
 
+            coins = new Coins(this);
+            coins.LoadContent(contentManager);
+
+            fuel = new Fuel(this);
+            fuel.LoadContent(contentManager);
+
             vehicle = new Vehicle();
             vehicle.Map = this;
-            vehicle.LoadContent(contentManager);
+            vehicle.LoadContent(contentManager, graphicsDevice);
 
             first = 400;
             second = 400;
@@ -96,32 +160,9 @@ namespace HillClimb
             secondHeight = 400;
         }
 
-        //private float Noise(float x)
-        //{
-        //    float interval = 500;
-
-        //    while( x > second)
-        //    {
-        //        first = second;
-        //        second += interval;
-        //        firstHeight = secondHeight;
-
-        //        Random r = new Random((int)second);
-
-        //        secondHeight = r.Next(-500, 500);
-        //    }
-
-        //    Debug.Write(first);
-        //    Debug.Write(second);
-        //    Debug.WriteLine("");
-
-        //    return ( ((x - first) * firstHeight) + ((second - x) * secondHeight)) / interval;
-
-        //    return 0;
-        //}
-
         public void Update(GameTime gameTime, OrthographicCamera camera)
         {
+            
             //wheel.Update(gameTime);
 
             //segments.Sort((x, y) => y.Distance.CompareTo(x.Distance));
@@ -154,17 +195,21 @@ namespace HillClimb
                 camera.Move(new Vector2(0, position.Y - 200));
             }
 
+            //Debug.WriteLine(camera.ScreenToWorld(new Vector2(0, 0)).X);
+
             //noise.GetNoise();
 
             //Vector2 lastSeg = segments.Last().P2;
             Segment lastSeg = segments.Last();
             Vector2 lastPoint = lastSeg.P2;
 
-            if (camera.WorldToScreen(lastPoint).X < 1280)
+            while(camera.WorldToScreen(lastPoint).X < 1280)
             {
                 float x = lastPoint.X + random.Next(20, 40);
-                float y = (noise.GetNoise(x, 0) * 100) + 500;
+                float y = (noise.GetNoise(x, 0) * 200) + 530;
                 segments.Add(new Segment(lastPoint, new Vector2(x, y)));
+                lastSeg = segments.Last();
+                lastPoint = lastSeg.P2;
             }
 
             //Debug.WriteLine(segments.Count);
@@ -173,6 +218,8 @@ namespace HillClimb
             {
                 segments.RemoveAt(0);
             }
+            coins.Update(gameTime, camera);
+            fuel.Update(gameTime, camera);
 
         }
 
@@ -184,14 +231,17 @@ namespace HillClimb
 
             //spriteBatch.Draw(texture, new Rectangle(0, (int)(480 - level), 800, (int)level), Color.Black);
 
+            
 
-
-            vehicle.Draw(spriteBatch, gameTime);
+            vehicle.Draw(spriteBatch, gameTime, camera);
 
             foreach (Segment segment in segments)
             {
                 segment.Draw(spriteBatch, gameTime, texture);    
             }
+
+            coins.Draw(spriteBatch, gameTime, camera);
+            fuel.Draw(spriteBatch);
 
             //spriteBatch.Draw(texture, new Rectangle(49, (int)(480 - level), (int)(MathHelper.TwoPi * 25), 10), Color.Yellow);
             //spriteBatch.Draw(texture, new Rectangle(49 + (int)(MathHelper.TwoPi * 25), (int)(480 - level), (int)(MathHelper.TwoPi * 25), 10), Color.Magenta);

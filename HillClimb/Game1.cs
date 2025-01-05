@@ -11,6 +11,7 @@ using MonoGame.Extended.ViewportAdapters;
 //using FarseerPhysics.Collision;
 
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 
@@ -31,7 +32,12 @@ namespace HillClimb
         const float pixelToUnit = 1 / unitToPixel;
         private Texture2D texture;
         private Texture2D groundTexture;
+        private Texture2D titleScreen;
         private int fps;
+
+        private int state; // 0 => menu, 1 => game, 2 => game over
+
+        private bool gameOver;
 
         public Game1()
         {
@@ -77,24 +83,39 @@ namespace HillClimb
             //texture = Content.Load<Texture2D>("Textures/ball");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Font");
+
+            gameOver = false;
+
+            titleScreen = Content.Load<Texture2D>("Images/title");
             //groundTexture = new Texture2D(GraphicsDevice, 1, 1);
             //Color[] color = { Color.White };
             //groundTexture.SetData<Color>(color);
 
 
             map.LoadContent(GraphicsDevice, spriteBatch, Content);
+            state = 0;
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
 
             base.Update(gameTime);
             fps = (int)(1 / gameTime.ElapsedGameTime.TotalSeconds);
 
-
-            map.Update(gameTime, camera);
+            if(state == 1)
+            {
+                if (map.Vehicle.IsAlive)
+                {
+                    map.Update(gameTime, camera);
+                }
+                else
+                {
+                    gameOver = true;
+                    state = 2;
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -107,19 +128,40 @@ namespace HillClimb
 
             spriteBatch.Begin(SpriteSortMode.Immediate, transformMatrix: transformMatrix);
 
-            map.Draw(spriteBatch, gameTime);
+            if(state == 0)
+            {
+                spriteBatch.Draw(titleScreen, new Rectangle(0, 0, 1280, 720), Color.White);
+            }
 
-            //string output = "alma";
-            string fpsS = fps.ToString();
-            spriteBatch.DrawString(font, fpsS, camera.ScreenToWorld(new Vector2(1280 - (font.MeasureString(fpsS).X * 2), 0)), Color.Red, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0.5f);
-            string distanceS = map.Distance.ToString();
-            spriteBatch.DrawString(font, distanceS, camera.ScreenToWorld(new Vector2(5, 0)), Color.Red, 0, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0.5f);
+            else if (state == 1)
+            {
 
-            //Vector2 scale = new Vector2(50 / (float)texture.Width, 50 / (float)texture.Height);
+                map.Draw(spriteBatch, gameTime);
 
-            //spriteBatch.Draw(texture, body.Position * unitToPixel, null, Color.White, body.Rotation, new Vector2(texture.Width / 2.0f, texture.Height / 2.0f), scale, SpriteEffects.None, 0);
-            //spriteBatch.Draw(groundTexture, ground.Position * unitToPixel, null, Color.Black, ground.Rotation, new Vector2(0, 0), new Vector2(600, 20), SpriteEffects.None, 0);
+                string fpsS = fps.ToString();
+                spriteBatch.DrawString(font, fpsS, camera.ScreenToWorld(new Vector2(1280 - (font.MeasureString(fpsS).X * 2), 0)), Color.Red, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0.5f);
+                string distanceS = "Distance: " + map.Distance.ToString();
+                spriteBatch.DrawString(font, distanceS, camera.ScreenToWorld(new Vector2(5, 100)), Color.Black, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0.5f);
 
+                if (gameOver)
+                {
+                    string outS = "Game Over";
+
+                    switch (map.Vehicle.DeathReason)
+                    {
+                        case 0:
+                            outS += "\nDriver Down";
+                            break;
+                        case 1:
+                            outS += "\nOut of Fuel";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    spriteBatch.DrawString(font, outS, camera.ScreenToWorld(new Vector2(500, 200)), Color.Red);
+                }
+            }
             spriteBatch.End();
 
 

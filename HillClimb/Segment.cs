@@ -69,12 +69,12 @@ namespace HillClimb
         //    get { return id; }
         //}
 
-        private void init()
+        private void Init()
         {
             float hitboxHeight = 50;
             float length = (float)Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
             slope = (float)Math.Asin((p1.Y - p2.Y) / length);
-            color = Color.Black;
+            color = Color.Green;
             if (P1.Y <= P2.Y)
             {
                 R1.X = P1.X + hitboxHeight * (float)Math.Cos(slope - (Math.PI / 2));
@@ -105,7 +105,7 @@ namespace HillClimb
                 this.p2 = p1;
             }
             //this.id = id;
-            init();
+            Init();
             
         }
 
@@ -123,7 +123,7 @@ namespace HillClimb
             }
             //this.id = id;
             //this.id = id;
-            init();
+            Init();
             
         }
 
@@ -153,7 +153,7 @@ namespace HillClimb
             Rectangle rect = new Rectangle((int)P1.X, (int)P1.Y, (int)length, 20);
             spriteBatch.Draw(texture, rect, null, color, rotation, new Vector2(0, 0), SpriteEffects.None, 1);
 
-            spriteBatch.DrawLine(P1.X, P1.Y, P2.X, P2.Y, Color.Blue);
+            //spriteBatch.DrawLine(P1.X, P1.Y, P2.X, P2.Y, Color.Blue);
 
             //spriteBatch.DrawLine(R1.X, R1.Y, R2.X, R2.Y, Color.Red);
             //spriteBatch.DrawLine(R1.X, R1.Y, P1.X, P1.Y, Color.Red);

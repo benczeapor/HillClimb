@@ -17,9 +17,9 @@ namespace HillClimb
 {
     internal class Wheel
     {
-        const float gravity = 250;
+        const float gravity = 500;
         const float touchThreshold = 3;
-        const float maxRotationSpeed = 25;
+        const float maxRotationSpeed = 30;
         const float rotationAcceleration = 20;
         const float groundDrag = 0.5f;
         const float airDrag = 0.99f;
@@ -39,6 +39,8 @@ namespace HillClimb
         private Segment currentSegment;
         private Segment nextSegment;
 
+        private Vehicle vehicle;
+
         private Vector2 projection;
 
         private bool willPhaseTrough;
@@ -54,6 +56,7 @@ namespace HillClimb
         public Vector2 Velocity
         {
             get { return velocity; }
+            set { velocity = value; }
         }
 
         private Map map;
@@ -93,9 +96,16 @@ namespace HillClimb
             set { force = value; }
         }
 
-        public Wheel(Map map)
+        private bool canRotate;
+        public bool CanRotate
+        {
+            get { return  canRotate; }
+        }
+
+        public Wheel(Map map, Vehicle vehicle)
         {
             Map = map;
+            this.vehicle = vehicle;
         }
 
         public void CorrectPosition()
@@ -177,15 +187,22 @@ namespace HillClimb
             {
                 isOnGround = false;
                 currentSegment = null;
+                canRotate = true;
                 return;
+            }
+
+            if(minDist <= wheelRadius + 5)
+            {
+                canRotate = false;
+            }
+            else
+            {
+                canRotate = true;
             }
 
             if (minDist <= wheelRadius + 0.1)
             {
-                //Debug.WriteLine("fasz");4
                 isOnGround = true;
-
-                //segment.Color = Color.Red;
             }
             else
             {
@@ -204,7 +221,7 @@ namespace HillClimb
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             
-            velocity.Y += gravity * elapsed;
+            //velocity.Y += gravity * elapsed;
 
             if (isOnGround)
             {
@@ -229,6 +246,7 @@ namespace HillClimb
             }
             else
             {
+                velocity.Y += gravity * elapsed;
                 //Debug.WriteLine("asder");
             }
 
@@ -253,23 +271,44 @@ namespace HillClimb
 
             if (kstate.IsKeyDown(Keys.Left))
             {
-                rotationSpeed -= rotationAcceleration * elapsed;
-                if (rotationSpeed < -maxRotationSpeed)
+                vehicle.ConsumeFuel = true;
+                if (vehicle.Fuel > 0 && vehicle.IsAlive)
                 {
-                    rotationSpeed = -maxRotationSpeed;
+                    rotationSpeed -= rotationAcceleration * elapsed;
+                    if (rotationSpeed < -maxRotationSpeed)
+                    {
+                        rotationSpeed = -maxRotationSpeed;
+                    }
+                }
+                else
+                {
+                    rotationSpeed *= 0.98f;
                 }
             }
             else if (kstate.IsKeyDown(Keys.Right))
             {
-                rotationSpeed += rotationAcceleration * elapsed;
-                if (rotationSpeed > maxRotationSpeed)
+
+                vehicle.ConsumeFuel = true;
+
+                if (vehicle.Fuel > 0 && vehicle.IsAlive)
                 {
-                    rotationSpeed = maxRotationSpeed;
+                    rotationSpeed += rotationAcceleration * elapsed;
+                    if (rotationSpeed > maxRotationSpeed)
+                    {
+                        rotationSpeed = maxRotationSpeed;
+                    }
+                }
+                else
+                {
+                    rotationSpeed *= 0.98f;
                 }
             }
             else
             {
-                //rotationSpeed *= 0.95f;
+                if (!canRotate)
+                {
+                    rotationSpeed *= 0.98f;
+                }
             }
         }
 
