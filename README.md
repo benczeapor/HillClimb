@@ -1,4 +1,5 @@
 
+<video src="https://github.com/user-attachments/assets/0be57b53-3ac5-440f-b7df-829adeacca7c" width="100%" autoplay loop muted playsinline></video>
 
 To open the compiled program:
   1. Download zip
@@ -6,11 +7,7 @@ To open the compiled program:
   3. Go to ```HillClimb/bin/debug/net8.0```
   4. Open ```hillclimb.exe``` and enjoy!
 
-If you want to edit it, you can do the first 2 steps from befor
-
-https://github.com/user-attachments/assets/0be57b53-3ac5-440f-b7df-829adeacca7c
-
-e and then open ```HillClimb.sln``` in Microsoft Visual Studio.
+If you want to edit it, you can do the first 2 steps from before and then open ```HillClimb.sln``` in Microsoft Visual Studio.
 
 Alternatively, if you only want to view the code, you can do that by opening the files which have ```.cs``` extension. 
 (The code execution starts in the Game1.cs file)
