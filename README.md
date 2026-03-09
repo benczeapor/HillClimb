@@ -1,5 +1,7 @@
 <video src="HillClimb.mp4" width="100%" autoplay loop muted>not good</video>
 
+![Demo video](HillClimb.mp4)
+
 To open the compiled program:
   1. Download zip
   2. Extract
