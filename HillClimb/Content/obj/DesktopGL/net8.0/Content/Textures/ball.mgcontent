@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/Cucc/C#/HillClimb/HillClimb/Content/Textures/ball.png</SourceFile>
-  <SourceTime>2024-10-31T15:03:28.5539124+02:00</SourceTime>
+  <SourceTime>2024-12-03T20:03:01.0292354+02:00</SourceTime>
   <DestFile>D:/Cucc/C#/HillClimb/HillClimb/Content/bin/DesktopGL/Content/Textures/ball.xnb</DestFile>
-  <DestTime>2024-11-25T07:58:18.2318769+02:00</DestTime>
+  <DestTime>2026-03-08T17:45:39.7936548+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T20:05:56+03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

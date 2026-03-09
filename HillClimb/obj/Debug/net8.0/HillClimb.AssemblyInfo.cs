@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HillClimb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43e73dcb998bea83e84ca0848be90e14d9a6462a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a098eab3f49728a224dc4aef56c44c468b2e97d8")]
 [assembly: System.Reflection.AssemblyProductAttribute("HillClimb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HillClimb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

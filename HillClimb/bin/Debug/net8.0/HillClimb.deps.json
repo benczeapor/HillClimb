@@ -11,7 +11,6 @@
           "Aether.Physics2D": "2.1.0",
           "FarseerPhysics.MonoGame.Unofficial": "3.5.0",
           "Gum.MonoGame": "2025.1.1.1",
-          "MonoGame.Content.Builder.Task": "3.8.1.303",
           "MonoGame.Extended": "4.0.0",
           "MonoGame.Framework.DesktopGL": "3.8.1.303"
         },
@@ -59,9 +58,6 @@
         }
       },
       "FlatRedBall.ToolsUtilities.NetStandard/2025.1.1.1": {
-        "dependencies": {
-          "System.Numerics.Vectors": "4.5.0"
-        },
         "runtime": {
           "lib/net6.0/ToolsUtilitiesStandard.dll": {
             "assemblyVersion": "0.0.0.0",
@@ -91,7 +87,6 @@
           }
         }
       },
-      "MonoGame.Content.Builder.Task/3.8.1.303": {},
       "MonoGame.Extended/4.0.0": {
         "runtime": {
           "lib/net6.0/MonoGame.Extended.dll": {
@@ -150,7 +145,6 @@
           }
         }
       },
-      "System.Numerics.Vectors/4.5.0": {},
       "TextCopy/6.2.1": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
@@ -219,13 +213,6 @@
       "path": "microsoft.extensions.dependencyinjection.abstractions/7.0.0",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
     },
-    "MonoGame.Content.Builder.Task/3.8.1.303": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
-      "path": "monogame.content.builder.task/3.8.1.303",
-      "hashPath": "monogame.content.builder.task.3.8.1.303.nupkg.sha512"
-    },
     "MonoGame.Extended/4.0.0": {
       "type": "package",
       "serviceable": true,
@@ -239,13 +226,6 @@
       "sha512": "sha512-eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
       "path": "monogame.framework.desktopgl/3.8.1.303",
       "hashPath": "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
-    },
-    "System.Numerics.Vectors/4.5.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
-      "path": "system.numerics.vectors/4.5.0",
-      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
     },
     "TextCopy/6.2.1": {
       "type": "package",
