@@ -1,4 +1,4 @@
-<video src="./HillClimb.mp4" width="320" height="240" controls></video>
+<video src="HillClimb.mp4" width="100%" autoplay loop muted>not good</video>
 
 To open the compiled program:
   1. Download zip
